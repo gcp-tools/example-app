@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "@gcp-tools/eslint-config"
+  ],
+  "ignorePatterns": [
+    "cdktf.gen/*"
+  ],
+  "parserOptions": {
+    "project": "tsconfig.eslint.json"
+  },
+  "root": true
+}

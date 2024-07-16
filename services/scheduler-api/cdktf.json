@@ -1,0 +1,31 @@
+{
+  "app": "node ./dist/main.mjs",
+  "codeMakerOutput": "cdktf.gen",
+  "context": {
+    "allowSepCharsInLogicalIds": "true",
+    "excludeStackIdFromLogicalIds": "true"
+  },
+  "language": "typescript",
+  "projectId": "pragma--app",
+  "sendCrashReports": "false",
+  "terraformModules": [ {
+    "name": "google-network/vpc",
+    "source": "terraform-google-modules/network/google",
+    "version": "~> 9.0"
+  }, {
+    "name": "google-network/subnets",
+    "source": "terraform-google-modules/network/google//modules/subnets",
+    "version": "~> 9.0"
+  }, {
+    "name": "google-network/subnets-beta",
+    "source": "terraform-google-modules/network/google//modules/subnets-beta",
+    "version": "~> 9.0"
+  }, {
+    "name": "google-network/vpc-serverless-connector-beta",
+    "source": "terraform-google-modules/network/google//modules/vpc-serverless-connector-beta",
+    "version": "~> 9.0"
+  } ],
+  "terraformProviders": [
+    "hashicorp/random@~> 3.6.2"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "name": "@gcp-tools/infra",
+  "author": "developers@gcp-tools.com",
+  "description": "pragma | infra",
+  "license": "Apache-2.0",
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": {
+      "default": "./dist/main.mjs",
+      "types": "./dist/main.d.mts"
+    }
+  },
+  "imports": {
+    "#cdktf-modules/*": {
+      "import": "cdktf.gen/modules/*.ts"
+    },
+    "#cdktf-providers/*": {
+      "import": "cdktf.gen/providers/*.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --pretty",
+    "cdk:deploy": "cdktf deploy --auto-approve --outputs-file stack-outputs-$npm_config_stack.json --outputs-file-include-sensitive-outputs --skip-synth $STACK",
+    "cdk:destroy": "cdktf destroy --auto-approve --ignore-missing-stack-dependencies $STACK",
+    "cdk:diff": "cdktf diff --skip-synth $STACK",
+    "cdk:synth": "cdktf synth",
+    "clean": "rm -rf coverage dist",
+    "lint": "biome check src --write",
+    "test": "npm exec -- jest --config jest.config.mjs --passWithNoTests",
+    "upgrade": "npm i cdktf@latest cdktf-cli@latest",
+    "upgrade:next": "npm i cdktf@next cdktf-cli@next",
+    "watch": "npm exec -- cdktf watch --auto-approve"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7"
+  },
+  "engines": {
+    "node": ">=20.12.2",
+    "npm": ">=10.5.0"
+  },
+  "publishConfig": {
+    "registry": "https://tbc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://tbc"
+  }
+}
