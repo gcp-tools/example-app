@@ -1,3 +1,2 @@
-# pragma
+# gcp-tools/example-app
 
-To install dependencies:
