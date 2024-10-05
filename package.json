@@ -14,12 +14,15 @@
     "lint": "npm run lint --if-present --workspaces",
     "prepare": "husky",
     "synth": "npm run synth --if-present --workspaces",
-    "test": "npm run test --if-present --workspace ./libs --workspace ./services"
+    "test": "npm run test --if-present --workspace ./libs --workspace ./services",
+    "upgrade": "npm i cdktf@latest",
+    "upgrade:next": "npm i cdktf@next"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.1",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@types/jest": "^29.5.11",
     "@types/node": "^20.14.2",
     "conventional-changelog-cli": "^5.0.0",
     "conventional-changelog-eslint": "^6.0.0",
@@ -32,7 +35,8 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@gcp-tools/cdktf": "file:../gcp-tools-cdktf"
+    "@gcp-tools/cdktf": "file:../gcp-tools-cdktf",
+    "cdktf": "^0.20.9"
   },
   "repository": {
     "type": "git",
