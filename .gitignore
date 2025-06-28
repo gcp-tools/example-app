@@ -169,7 +169,7 @@ dist
 .pnp.*
 
 # IntelliJ based IDEs
-.idea
+.idea/*
 
 # Finder (MacOS) folder config
 .DS_Store
@@ -185,3 +185,4 @@ scripts/admin-project
 scripts/gcp_auth_access_token
 scripts/release
 
+chats

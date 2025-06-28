@@ -27,6 +27,8 @@ hel%: ##   help~~ show this help message
 
 help_linebreak: ##     ~~
 
-include ./scripts/make/tsc.mk
+include ./scripts/make/build.mk
 include ./scripts/make/cdktf.mk
-include ./scripts/make/seq.mk
+include ./scripts/make/install.mk
+include ./scripts/make/lint.mk
+include ./scripts/make/test.mk

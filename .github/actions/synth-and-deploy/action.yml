@@ -1,0 +1,26 @@
+name: 'Synth and Deploy CDKTF'
+description: 'Runs terraform synth and deploy for a given directory.'
+
+inputs:
+  working-directory:
+    description: 'The directory to run the steps in'
+    required: true
+
+  stack-name:
+    description: 'The name of the stack to deploy'
+    required: false
+    default: "'*'"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Synth
+      shell: bash
+      run: npx cdktf synth
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Deploy
+      if: github.event_name == 'push'
+      shell: bash
+      run: npx cdktf deploy ${{ inputs.stack-name }} --auto-approve
+      working-directory: ${{ inputs.working-directory }}

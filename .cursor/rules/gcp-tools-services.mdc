@@ -1,0 +1,593 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Cursor Rules for Service Development
+
+## Service Development Workflow
+
+### Phase 1: Code Development
+
+#### 1. Specification Review
+- **ALWAYS** read the complete specification before starting any development work
+- Understand the requirements, endpoints, data models, and business logic
+- Identify all external dependencies (databases, APIs, services)
+
+#### 2. Planning and Approval
+- Report back with a detailed plan of action including:
+  - Service architecture and structure
+  - API endpoints and their functionality
+  - Data models and validation rules
+  - External integrations required
+  - Testing strategy
+- **WAIT for acceptance** before proceeding with any development work
+
+#### 3. Code Generation Principles
+
+##### TypeScript Standards (from @typescript.mdc)
+- Use 2-space indentation
+- Maximum line length of 80 characters
+- Use single quotes for strings
+- Always use trailing commas in multi-line structures
+- Use semicolons only when necessary
+- Use arrow functions with parentheses for parameters
+- Use double quotes for JSX attributes
+- Enable strict mode and all strict checks
+- Do not use the 'any' type
+- Use explicit return types for functions
+- Use types not interfaces
+- Use readonly for immutable properties
+- Use const assertions for literal types
+- Use type inference where possible, but be explicit with function parameters
+- Use proper type imports/exports with ESM syntax
+- Prefer functions over classes where possible
+- Use async/await for asynchronous operations
+- Leverage TypeScript's built-in utility types
+- Use generics for reusable type patterns
+
+##### Architecture Principles
+- **Input Validation**: ALWAYS validate inputs into handlers (request, database, API calls, agent responses, events, etc.)
+- **Separation of Concerns**:
+  - IO functions that fetch data should exist in their own file in a `lib/io` directory
+  - Functions that transform data should be pure and live in their own file in a `lib/transform` directory
+  - Control flow should occur in the handler where possible
+  - **NEVER** mix IO and transform/processing functionality in the same function
+- Data returned from IO functions should be of a type
+```typescript
+Promise<Result<Data|IoError>>:
+```
+- - Where Data is a type that represents actual data
+  - Where IoError is a type eg,
+```typescript
+export type BaseError = {
+  cause?: Error | unknown
+  data?: unknown
+  message: string
+}
+export type NotFoundError = BaseError & {
+  code: 'NOT_FOUND'
+}
+
+type IoError = NotFoundError |...
+```
+
+
+##### Observation Principles
+- log all inputs to a handler (request, database, API calls, agent responses, events, etc.)
+
+
+##### Testing Requirements
+- Handlers should have their logic fully tested with mocked IO and transform functions
+- Transform functions should be 100% unit tested
+- Use vitest for testing
+- Follow AAA pattern (Arrange, Act, Assert)
+- Mock external dependencies appropriately
+- Test error cases and edge conditions
+
+##### Code Quality
+- Fix any lint issues before proceeding
+- Use biome for linting and formatting
+- Ensure all TypeScript strict checks pass
+- Follow clean code principles
+
+### Phase 2: Infrastructure and Deployment
+
+#### 1. Infrastructure Planning
+- **ONLY** proceed to Phase 2 when ALL tests and linting pass
+- Describe a plan for the IAC code that needs to be created for the given service
+- Follow gcp-tools/cdktf rules from @gcp-services.mdc
+- Include:
+  - Service configuration (CPU, memory, scaling)
+  - Environment variables and secrets
+  - IAM permissions required
+  - Network configuration
+  - Monitoring and logging setup
+
+#### 2. Infrastructure Code Generation
+- Upon acceptance, generate the IAC code
+- Follow established patterns from gcp-tools-cdktf
+- Use proper resource naming with `id()` method
+- Implement proper resource dependencies
+- Use environment configuration for region and project settings
+
+#### 3. Deployment Configuration
+- Update the .github deployment script with information on how to deploy
+- Ensure proper environment variables are configured
+- Set up appropriate GitHub secrets if needed
+- Configure deployment triggers and conditions
+
+#### 4. Deployment Execution
+- Create a commit for the feature with descriptive message
+- Push to the repository
+- Monitor GitHub Actions output to test deployment status
+- If deployment fails:
+  - Analyze the error logs
+  - Attempt to fix the deployment issues
+  - Re-commit and re-deploy
+  - Continue until deployment succeeds
+
+## Service Structure Template
+
+```
+services/[service-name]/
+├── src/
+│   ├── handlers/           # Request handlers (control flow)
+│   ├── lib/
+│   │   ├── io/            # IO functions (database, API calls)
+│   │   └── transform/     # Pure data transformation functions
+│   ├── types/             # TypeScript type definitions
+│   ├── utils/             # Utility functions
+│   └── index.ts           # Service entry point
+├── tests/
+│   ├── handlers/          # Handler tests
+│   ├── lib/
+│   │   ├── io/           # IO function tests
+│   │   └── transform/    # Transform function tests
+│   └── fixtures/         # Test data and fixtures
+├── package.json
+├── tsconfig.json
+├── Dockerfile
+└── README.md
+```
+
+## Code Examples
+
+### Types Definition
+```typescript
+// types/errors.ts
+export type BaseError = {
+  cause?: Error | unknown
+  data?: unknown
+  message: string
+}
+
+export type NotFoundError = BaseError & {
+  code: 'NOT_FOUND'
+}
+
+export type ValidationError = BaseError & {
+  code: 'VALIDATION_ERROR'
+}
+
+export type IoError = NotFoundError | ValidationError
+
+// types/result.ts
+export type Result<T, E = IoError> =
+  | { success: true; data: T }
+  | { success: false; error: E }
+
+// types/user.ts
+export type User = {
+  readonly id: string
+  readonly email: string
+  readonly name: string
+  readonly createdAt: Date
+  readonly status: 'active' | 'inactive' | 'pending'
+}
+
+export type GetUserRequest = {
+  readonly userId: string
+  readonly includeMetadata?: boolean
+}
+
+export type GetUserResponse = {
+  readonly user: User
+  readonly timestamp: Date
+  readonly metadata?: {
+    readonly lastLogin?: Date
+    readonly preferences?: Record<string, unknown>
+  }
+}
+
+// Database response type (raw from database)
+export type RawUserData = {
+  id: string
+  email: string
+  name: string
+  created_at: string
+  status: string
+}
+
+// Additional data from another source
+export type UserMetadata = {
+  last_login?: string
+  preferences?: Record<string, unknown>
+}
+```
+
+### IO Function with Response Validation
+```typescript
+// lib/io/user-database.ts
+import { z } from 'zod'
+import { User, Result, IoError, NotFoundError, RawUserData } from '../../types'
+
+// Zod schema for database response validation
+const RawUserDataSchema = z.object({
+  id: z.string().uuid('Invalid user ID format'),
+  email: z.string().email('Invalid email format'),
+  name: z.string().min(1, 'Name cannot be empty'),
+  created_at: z.string().datetime('Invalid date format'),
+  status: z.enum(['active', 'inactive', 'pending'], {
+    errorMap: () => ({ message: 'Invalid status value' }),
+  }),
+})
+
+export const fetchUserFromDatabase = async (
+  userId: string,
+): Promise<Result<User, IoError>> => {
+  try {
+    // Simulate database call
+    const rawUserData = await database.query(
+      'SELECT * FROM users WHERE id = ?',
+      [userId],
+    )
+
+    if (!rawUserData) {
+      return {
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: `User with id ${userId} not found`,
+          data: { userId },
+        },
+      }
+    }
+
+    // Validate database response with Zod
+    const validationResult = RawUserDataSchema.safeParse(rawUserData)
+    if (!validationResult.success) {
+      return {
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Database response validation failed',
+          cause: validationResult.error,
+          data: { rawUserData, validationErrors: validationResult.error.errors },
+        },
+      }
+    }
+
+    // Transform validated data to domain type
+    const user: User = {
+      id: validationResult.data.id,
+      email: validationResult.data.email,
+      name: validationResult.data.name,
+      createdAt: new Date(validationResult.data.created_at),
+      status: validationResult.data.status,
+    }
+
+    return {
+      success: true,
+      data: user,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Database query failed',
+        cause: error,
+        data: { userId },
+      },
+    }
+  }
+}
+
+// Additional IO function for metadata
+export const fetchUserMetadata = async (
+  userId: string,
+): Promise<Result<UserMetadata, IoError>> => {
+  try {
+    const metadata = await metadataService.getUserMetadata(userId)
+    return {
+      success: true,
+      data: metadata || {},
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Failed to fetch user metadata',
+        cause: error,
+        data: { userId },
+      },
+    }
+  }
+}
+```
+
+### Transform Functions
+```typescript
+// lib/transform/user-validation.ts
+import { z } from 'zod'
+import { GetUserRequest, ValidationError } from '../../types'
+
+const GetUserRequestSchema = z.object({
+  userId: z.string().uuid('Invalid user ID format'),
+  includeMetadata: z.boolean().optional(),
+})
+
+export const validateUserInput = (
+  input: unknown,
+): GetUserRequest | ValidationError => {
+  try {
+    const validated = GetUserRequestSchema.parse(input)
+    return {
+      userId: validated.userId,
+      includeMetadata: validated.includeMetadata,
+    }
+  } catch (error) {
+    return {
+      code: 'VALIDATION_ERROR',
+      message: 'Invalid request parameters',
+      cause: error,
+      data: input,
+    }
+  }
+}
+
+// lib/transform/user-response.ts
+import { User, GetUserResponse, UserMetadata } from '../../types'
+
+export const transformUserResponse = (
+  user: User,
+  metadata?: UserMetadata,
+  includeMetadata?: boolean,
+): GetUserResponse => {
+  const baseResponse: GetUserResponse = {
+    user,
+    timestamp: new Date(),
+  }
+
+  // Transform based on includeMetadata property
+  if (includeMetadata && metadata) {
+    return {
+      ...baseResponse,
+      metadata: {
+        lastLogin: metadata.last_login ? new Date(metadata.last_login) : undefined,
+        preferences: metadata.preferences,
+      },
+    }
+  }
+
+  return baseResponse
+}
+```
+
+### Handler Implementation
+```typescript
+// handlers/user-handler.ts
+import { validateUserInput } from '../lib/transform/user-validation'
+import { fetchUserFromDatabase, fetchUserMetadata } from '../lib/io/user-database'
+import { transformUserResponse } from '../lib/transform/user-response'
+import { GetUserRequest, GetUserResponse, ValidationError } from '../types'
+
+export const getUserHandler = async (
+  request: GetUserRequest,
+): Promise<GetUserResponse | ValidationError> => {
+  // Log all inputs (Observation Principle)
+  console.log('getUserHandler input:', JSON.stringify(request, null, 2))
+
+  // Input validation
+  const validatedInput = validateUserInput(request)
+  if ('code' in validatedInput) {
+    console.log('Validation failed:', validatedInput)
+    return validatedInput
+  }
+
+  // IO operation with database response validation
+  const userResult = await fetchUserFromDatabase(validatedInput.userId)
+  if (!userResult.success) {
+    console.log('IO operation failed:', userResult.error)
+    return userResult.error
+  }
+
+  // Additional IO operation if metadata is requested
+  let metadata: UserMetadata | undefined
+  if (validatedInput.includeMetadata) {
+    const metadataResult = await fetchUserMetadata(validatedInput.userId)
+    if (metadataResult.success) {
+      metadata = metadataResult.data
+    }
+    // Note: We don't fail the entire request if metadata fails
+  }
+
+  // Data transformation - now accepts multiple objects and transforms based on properties
+  const response = transformUserResponse(
+    userResult.data,
+    metadata,
+    validatedInput.includeMetadata,
+  )
+
+  console.log('getUserHandler output:', JSON.stringify(response, null, 2))
+  return response
+}
+```
+
+### Test Examples
+```typescript
+// tests/handlers/user-handler.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { getUserHandler } from '../../src/handlers/user-handler'
+import * as userValidation from '../../src/lib/transform/user-validation'
+import * as userDatabase from '../../src/lib/io/user-database'
+import * as userResponse from '../../src/lib/transform/user-response'
+
+vi.mock('../../src/lib/transform/user-validation')
+vi.mock('../../src/lib/io/user-database')
+vi.mock('../../src/lib/transform/user-response')
+
+describe('getUserHandler', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('should return user when all operations succeed', async () => {
+    // Arrange
+    const request = { userId: '123e4567-e89b-12d3-a456-426614174000' }
+    const validatedInput = { userId: '123e4567-e89b-12d3-a456-426614174000' }
+    const userData = {
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      email: 'test@example.com',
+      name: 'Test User',
+      createdAt: new Date(),
+      status: 'active' as const,
+    }
+    const response = { user: userData, timestamp: new Date() }
+
+    vi.mocked(userValidation.validateUserInput).mockReturnValue(validatedInput)
+    vi.mocked(userDatabase.fetchUserFromDatabase).mockResolvedValue({
+      success: true,
+      data: userData,
+    })
+    vi.mocked(userResponse.transformUserResponse).mockReturnValue(response)
+
+    // Act
+    const result = await getUserHandler(request)
+
+    // Assert
+    expect(result).toEqual(response)
+    expect(userValidation.validateUserInput).toHaveBeenCalledWith(request)
+    expect(userDatabase.fetchUserFromDatabase).toHaveBeenCalledWith(
+      validatedInput.userId,
+    )
+    expect(userResponse.transformUserResponse).toHaveBeenCalledWith(userData)
+  })
+
+  it('should return validation error when database response is invalid', async () => {
+    // Arrange
+    const request = { userId: '123e4567-e89b-12d3-a456-426614174000' }
+    const validatedInput = { userId: '123e4567-e89b-12d3-a456-426614174000' }
+    const dbValidationError = {
+      code: 'VALIDATION_ERROR' as const,
+      message: 'Database response validation failed',
+      cause: new Error('Invalid email format'),
+      data: {
+        rawUserData: { id: '123', email: 'invalid-email', name: 'Test' },
+        validationErrors: [{ path: ['email'], message: 'Invalid email format' }]
+      },
+    }
+
+    vi.mocked(userValidation.validateUserInput).mockReturnValue(validatedInput)
+    vi.mocked(userDatabase.fetchUserFromDatabase).mockResolvedValue({
+      success: false,
+      error: dbValidationError,
+    })
+
+    // Act
+    const result = await getUserHandler(request)
+
+    // Assert
+    expect(result).toEqual(dbValidationError)
+    expect(userResponse.transformUserResponse).not.toHaveBeenCalled()
+  })
+})
+
+// tests/lib/transform/user-response.test.ts
+import { describe, it, expect } from 'vitest'
+import { transformUserResponse } from '../../../src/lib/transform/user-response'
+import { User, UserMetadata } from '../../../src/types'
+
+describe('transformUserResponse', () => {
+  const mockUser: User = {
+    id: '123e4567-e89b-12d3-a456-426614174000',
+    email: 'test@example.com',
+    name: 'Test User',
+    createdAt: new Date('2024-01-01'),
+    status: 'active',
+  }
+
+  const mockMetadata: UserMetadata = {
+    last_login: '2024-01-15T10:30:00Z',
+    preferences: { theme: 'dark', language: 'en' },
+  }
+
+  it('should transform user without metadata when includeMetadata is false', () => {
+    // Act
+    const result = transformUserResponse(mockUser, mockMetadata, false)
+
+    // Assert
+    expect(result).toEqual({
+      user: mockUser,
+      timestamp: expect.any(Date),
+    })
+    expect(result.metadata).toBeUndefined()
+  })
+
+  it('should transform user with metadata when includeMetadata is true', () => {
+    // Act
+    const result = transformUserResponse(mockUser, mockMetadata, true)
+
+    // Assert
+    expect(result).toEqual({
+      user: mockUser,
+      timestamp: expect.any(Date),
+      metadata: {
+        lastLogin: new Date('2024-01-15T10:30:00Z'),
+        preferences: { theme: 'dark', language: 'en' },
+      },
+    })
+  })
+
+  it('should transform user without metadata when metadata is undefined', () => {
+    // Act
+    const result = transformUserResponse(mockUser, undefined, true)
+
+    // Assert
+    expect(result).toEqual({
+      user: mockUser,
+      timestamp: expect.any(Date),
+    })
+    expect(result.metadata).toBeUndefined()
+  })
+})
+```
+
+## Quality Gates
+
+### Phase 1 Gates
+- [ ] Specification fully understood
+- [ ] Plan approved
+- [ ] All TypeScript strict checks pass
+- [ ] All linting issues resolved
+- [ ] All tests pass (handlers and transforms)
+- [ ] Code follows architecture principles
+
+### Phase 2 Gates
+- [ ] Phase 1 completed successfully
+- [ ] Infrastructure plan approved
+- [ ] IAC code generated and follows patterns
+- [ ] Deployment configuration updated
+- [ ] Deployment successful
+- [ ] Service is operational
+
+## Error Handling
+
+- If any phase fails, stop and fix the issues before proceeding
+- Document any deviations from the standard patterns
+- Ensure all error cases are properly handled and tested
+- Maintain clean git history with meaningful commit messages
+
+Remember: Quality over speed. Each phase must be completed successfully before moving to the next.

@@ -1,0 +1,119 @@
+name: Deploy liplan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GCP_TOOLS_BILLING_ACCOUNT: ${{ secrets.GCP_TOOLS_BILLING_ACCOUNT }}
+  GCP_TOOLS_FOUNDATION_PROJECT_ID: ${{ secrets.GCP_TOOLS_FOUNDATION_PROJECT_ID }}
+  GCP_TOOLS_ORG_ID: ${{ secrets.GCP_TOOLS_ORG_ID }}
+  GCP_TOOLS_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GCP_TOOLS_SERVICE_ACCOUNT_EMAIL }}
+  GCP_TOOLS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_TOOLS_WORKLOAD_IDENTITY_PROVIDER }}
+  GCP_TOOLS_FOUNDATION_PROJECT_NUMBER: ${{ secrets.GCP_TOOLS_FOUNDATION_PROJECT_NUMBER }}
+  GCP_TOOLS_TERRAFORM_REMOTE_STATE_BUCKET_ID: ${{ secrets.GCP_TOOLS_FOUNDATION_PROJECT_ID }}-terraform-state
+
+  GCP_TOOLS_DEVELOPER_IDENTITY_SPECIFIER: ${{ vars.GGCP_TOOLS_DEVELOPER_IDENTITY_SPECIFIER }}
+  GCP_TOOLS_GITHUB_IDENTITY_SPECIFIER: ${{ vars.GCP_TOOLS_GITHUB_IDENTITY_SPECIFIER }}
+  GCP_TOOLS_ENVIRONMENT: ${{ vars.GCP_TOOLS_ENVIRONMENT }}
+  GCP_TOOLS_PROJECT_NAME: ${{ vars.GCP_TOOLS_PROJECT_NAME }}
+  GCP_TOOLS_OWNER_EMAILS: ${{ vars.GCP_TOOLS_OWNER_EMAILS }}
+  GCP_TOOLS_REGIONS: ${{ vars.GCP_TOOLS_REGIONS }}
+
+  GCP_APP_PROJECT_ID: liplan-dev-app-op0atr
+
+  GCP_TOOLS_USER: ci
+  GCP_TOOLS_CI_ENVIRONMENTS: dev,test,sbx,prod
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          create_credentials_file: true
+          project_id: ${{ env.GCP_TOOLS_PROJECT_NAME }}
+          service_account: ${{ env.GCP_TOOLS_SERVICE_ACCOUNT_EMAIL }}
+          token_format: access_token
+          workload_identity_provider: ${{ env.GCP_TOOLS_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Cache and Install all dependencies
+        run: npm ci --workspaces
+
+      - name: Lint all workspaces
+        run: npm run lint --workspaces
+
+      - name: Check for changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            projects:
+              - 'iac/projects/**'
+            infra:
+              - 'iac/infra/**'
+            app-api:
+              - 'iac/app/src/stacks/api/**'
+              - 'services/api/**'
+            app-api-r:
+              - 'iac/app/src/stacks/api-r/**'
+              - 'services/api-r/**'
+            ingress:
+              - 'iac/ingress/**'
+              - 'api-gateway-config/**'
+
+      - name: Synth and Deploy Projects
+        if: steps.filter.outputs.projects == 'true'
+        uses: ./.github/actions/synth-and-deploy
+        with:
+          working-directory: ./iac/projects
+
+      - name: Synth and Deploy Infra
+        if: steps.filter.outputs.infra == 'true'
+        uses: ./.github/actions/synth-and-deploy
+        with:
+          working-directory: ./iac/infra
+
+      - name: Synth and Deploy Api Stack
+        if: steps.filter.outputs.app-api == 'true'
+        uses: ./.github/actions/synth-and-deploy
+        with:
+          working-directory: ./iac/app
+          stack-name: api
+
+      - name: Synth and Deploy Api-R Stack
+        if: steps.filter.outputs.app-api-r == 'true'
+        uses: ./.github/actions/synth-and-deploy
+        with:
+          working-directory: ./iac/app
+          stack-name: api-r
+
+      - name: Synth and Deploy Ingress Stack
+        # if: steps.filter.outputs.app-api == 'true'
+        uses: ./.github/actions/synth-and-deploy
+        with:
+          working-directory: ./iac/ingress
+          stack-name: ingress

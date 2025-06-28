@@ -1,0 +1,66 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+We must comply by law with UK and EU GDPR, UK DPA (2018), PCI and Sarbanes Oxley (SOX) 
+regulations. 
+We are audited annually both internally and externally on our compliance with these regulations. 
+We have controls in place that are carried out based on control frequency. Daily (i.e. as each 
+controlled action occurs), weekly, monthly, quarterly and annually. 
+ 
+we are confident that our controls are comprehensive in all areas. 
+Our IT governance framework follows ISO/IEC 27001:13 and NIST standards. 
+  
+Specific security measures include but are not limited to:  
+• Risk management. 
+o A comprehensive data, user and cyber security risk management 
+process is used by Newsquest to identify and manage risk.  This risk 
+management process relates to our own standards, policies, and 
+procedures and all our regulatory requirements for GDPR, SOX and PCI.   
+• Access control.  
+o Access to any system or service is based on the lowest level of access to 
+carry out job function. Elevated privileges require additional 
+authorisation. Segregation of duty rules apply to all job roles. Access is 
+granted only for as long as necessary and a comprehensive management 
+process is used to ensure compliance.  
+• Physical security. 
+o Access to all offices and all sensitive areas have suitable physical access 
+controls in place which are reviewed regularly. 
+• Data security 
+o Data security measures include encryption at rest and in transit. 
+Retention and destruction policies are in place. Data integrity 
+requirements are defined. 
+o Data are protected via network security and specific anti malware, 
+filtering and antivirus systems at all levels from perimeter through cloud 
+or server infrastructure, at application level and on each end user 
+computing device (endpoint).  
+• Network security  
+o Network segmentation and application layer firewall policies at the 
+"perimeter" and internally between segments ensure network access is 
+controlled. Only authorised devices and end users have access to 
+relevant data and systems. 
+o Secure remote access (IPSEC VPN and SSL) systems are used to allow 
+authorised personnel secure access to applications.  
+o Newsquest has a "Zero trust" approach to all devices connecting to or 
+attempting to connect to our systems and services. 
+ 
+ 
+• Monitoring and incident management. 
+o All security systems, network devices, data services, applications and 
+servers are monitored. Logging is aggregated into an analysis system to 
+enable events to be monitored, identified and incidents responded to 
+effectively. 
+o Vulnerability scanning and testing is carried out regularly.  
+o Newsquest, Gannett and contracted third parties provide 
+comprehensive incident management and response. 
+• Change control, updates, and patching. 
+o All security updates and patches are applied within applicable timescales 
+depending on criticality and importance. 
+o Change control is a comprehensive process involving suitable review and 
+authorisation by appropriate authority.  
+• User awareness and involvement. 
+o All staff and contractors are made aware of security requirements. 
+Information is available to all and regular mandatory training and 
+awareness programs ensure staff and contractors are an integral part of 
+our security systems

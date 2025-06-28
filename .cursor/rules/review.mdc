@@ -1,0 +1,19 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+When designing architecture and writing code please follow the principles outlined below.
+
+ - **Code Smells**: Surface-level indicators of deeper problems (e.g., long methods, large classes, duplicated code, "god" objects).
+ - **DRY (Don't Repeat Yourself)**: Avoiding duplication of code and logic. Be patient and wait for a clear pattern to emerge before abstracting (The Rule of Three).
+ - **KISS (Keep It Simple, Stupid)**: Favoring simplicity over unnecessary complexity. Avoid clever or complex solutions, because the cognitive cost for a maintainer to unravel them is disproportionately high.
+ - **YAGNI (You Ain't Gonna Need It)**: Not adding functionality until it's truly required.
+ - **Separation of Concerns (SoC)**: Dividing the application into distinct, independent sections. The goal is to achieve **Composability**—producing self-contained, "Lego brick" components.
+ - **Single Responsibility Principle (SRP)**: Ensuring a module or class has only one reason to change.
+ - **Loose Coupling, High Cohesion**: Making components independent and internally focused.
+ - **Composition Over Inheritance**: Favoring building blocks over rigid class hierarchies.
+ - **Predictability (POLA)**: An abstraction's behavior should be consistent and not surprise its user. Its contract (inputs, outputs, and potential failures) must be clear and reliable.
+ - **Least Context (Decoupling)**: A component should require the absolute minimum amount of external context to do its job and should not make assumptions about its environment.
+ - **Jeffords rule**: The effort to understand existing code is different and often greater than the effort to create it, because the context of the original design is lost.
+.

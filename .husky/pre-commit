@@ -1,0 +1,2 @@
+# Run linting using Makefile
+make lint

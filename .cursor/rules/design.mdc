@@ -1,0 +1,131 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Principles of Great UX Design: Guidelines for Agentic Software Development
+Flemming Bengtsen v1.0 23/04/2025
+## Introduction
+
+Creating a successful product requires more than just robust functionality - it needs an excellent user experience (UX). 
+
+## The UX Design Iceberg: A Layered Approach
+
+Think of UX design as an iceberg with four layers, where only the top is visible to users:
+
+1. **Conceptual Design** (bottom layer) - The underlying concept/mental model
+2. **Information Architecture** - How information and functionality are structured
+3. **Interaction Design** - How users interact with the product
+4. **Visual Design** (top layer) - How the product looks
+
+Always work from the bottom up, as each layer builds on the foundation below it.
+
+## 1. Conceptual Design
+
+### Guidelines:
+- Choose a conceptual model that aligns with how your target users think
+- Use familiar metaphors or mental models when possible
+- Keep the core concept simple and intuitive
+- Ensure the conceptual model supports the key benefits your product offers
+- Test your conceptual model with users early to validate its intuitiveness
+
+## 2. Information Architecture (IA)
+
+### Guidelines:
+- Organize content and functionality in a logical, hierarchical structure
+- Create a sitemap showing all pages/screens and their relationships
+- Use clear, consistent navigation patterns
+- Label sections and elements with terminology users understand
+- Group related items together and separate unrelated items
+- Apply the principle of progressive disclosure (reveal details as needed)
+- Test your information architecture with users to ensure findability
+
+## 3. Interaction Design
+
+### Guidelines:
+- Define clear user flows for key tasks
+- Create flowcharts for complex processes
+- Design with responsiveness in mind - account for different screen sizes
+- Provide clear feedback for user actions
+- Make system status visible to users
+- Create appropriate error messages that help users recover
+- Use consistent interaction patterns throughout the product
+- Design for appropriate default values and smart choices
+- Minimize the number of steps required to complete tasks
+- Apply Olsen's Law of Usability: "The less user effort required, the higher the percentage of users who will take that action"
+
+## 4. Visual Design
+
+### Guidelines:
+- Use a consistent, limited color palette with:
+  - 1-2 main colors
+  - 1-2 accent colors
+  - Supporting neutral colors
+- Ensure sufficient contrast for readability
+- Use a limited, consistent set of typography choices:
+  - 1-2 font families
+  - Consistent hierarchy of font sizes
+  - Appropriate line height and spacing
+- Implement a grid system for layout consistency
+- Use white space effectively to create visual hierarchy and reduce cognitive load
+- Create a style guide to maintain consistency
+- Ensure visual elements support the product's purpose and brand identity
+- Design with accessibility in mind (color contrast, font sizes, etc.)
+
+## Key Design Principles
+
+### Gestalt Principles:
+- **Proximity**: Objects near each other are perceived as related
+- **Similarity**: Objects that share visual characteristics are perceived as related
+- **Continuity**: The eye naturally follows lines or curves
+- **Closure**: The mind fills in gaps to perceive complete shapes
+- **Figure/Ground**: Elements are perceived as either figure (focus) or ground (background)
+
+### Visual Hierarchy:
+- Guide the user's attention in order of importance
+- Use size, color, contrast, and position to create hierarchy
+- Place critical elements in prominent positions (top-left for LTR languages)
+- Test your designs by squinting - the most important elements should still stand out
+
+### Composition Principles:
+- **Unity**: Create a cohesive whole from individual elements
+- **Contrast**: Use differences to create visual interest and highlight important elements
+- **Balance**: Distribute visual weight evenly (symmetrical or asymmetrical)
+- **Use of space**: Ensure adequate white space to avoid visual clutter
+
+### Responsive Design:
+- Design flexibly for multiple screen sizes
+- Consider a "mobile-first" approach
+- Define appropriate breakpoints for layout changes
+- Test designs across multiple device types
+
+## Practical Implementation Tips
+
+- For early-stage design, focus first on wireframes before adding visual design
+- Test with users early and often, refining each layer based on feedback
+- Pay attention to copy/text as a crucial part of the UX
+- Keep the design simple and focused on user needs
+- Use established design patterns when appropriate
+- Design for both first-time and repeat users
+- Consider accessibility requirements throughout the design process
+- Remember that UX is judged by the users - always validate with user testing
+
+## Balancing Usability and Delight
+
+### Usability Guidelines:
+- Make it easy for users to complete their primary tasks
+- Minimize cognitive load
+- Ensure consistency across the product
+- Make the product efficient to use
+- Design for error prevention and recovery
+
+### Delight Guidelines:
+- Add thoughtful animations or transitions
+- Incorporate pleasant surprises where appropriate
+- Use humor appropriately in copy or visuals
+- Design for personality that matches your brand
+- Add micro-interactions that respond to user actions
+- Consider emotional responses to your design
+
+## Remember:
+A great UX is one where users can easily accomplish their goals while enjoying the process. Always prioritize user needs over aesthetic preferences, and validate your design decisions through testing.

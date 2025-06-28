@@ -1,0 +1,38 @@
+{
+  "name": "@liplan/services-api",
+  "author": "developers@liplan.com",
+  "description": "liplan | services | api",
+  "license": "Apache-2.0",
+  "type": "module",
+  "version": "0.0.0",
+  "main": "./dist/handler.mjs",
+  "scripts": {
+    "build": "tsc --pretty",
+    "clean": "rm -rf coverage dist",
+    "lint": "biome check src --write",
+    "test": "vitest run --passWithNoTests --disable-console-intercept",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^7.11.1",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "zod": "^3.25.62"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/body-parser": "^1.19.6",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.14.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://tbc"
+  }
+}

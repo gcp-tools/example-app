@@ -1,0 +1,11 @@
+{
+  "app": "npm run compile && node ./dist/main.mjs",
+  "codeMakerOutput": "cdktf.gen",
+  "context": {
+    "allowSepCharsInLogicalIds": "true",
+    "excludeStackIdFromLogicalIds": "true"
+  },
+  "language": "typescript",
+  "projectId": "gcp-tools-example-app-infra",
+  "sendCrashReports": "false"
+}

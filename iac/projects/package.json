@@ -1,0 +1,35 @@
+{
+  "name": "@gcp-tools/example-app-projects",
+  "author": "dev@gcp-tools.com",
+  "description": "gcp-tools | example-app | projects",
+  "license": "Apache-2.0",
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": {
+      "default": "./dist/main.mjs",
+      "types": "./dist/main.d.mts"
+    }
+  },
+  "scripts": {
+    "deploy": "cdktf deploy --auto-approve --outputs-file stack-outputs-$npm_config_stack.json --outputs-file-include-sensitive-outputs --skip-synth $STACK",
+    "destroy": "cdktf destroy --auto-approve --ignore-missing-stack-dependencies $STACK",
+    "diff": "cdktf diff --skip-synth $STACK",
+    "synth": "cdktf synth",
+    "clean": "rm -rf coverage dist",
+    "compile": "tsc --pretty",
+    "lint": "biome check src --write",
+    "test": "npm exec -- jest --config jest.config.mjs --passWithNoTests",
+    "upgrade": "npm run upgrade:cdktf && npm run upgrade:gcptools",
+    "upgrade:cdktf": "npm i cdktf@latest cdktf-cli@latest",
+    "upgrade:gcptools": "npm i @gcp-tools/cdktf@latest",
+    "watch": "npm exec -- cdktf watch --auto-approve"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@gcp-tools/cdktf": "^1.12.30",
+    "cdktf": "^0.21.0",
+    "cdktf-cli": "^0.21.0",
+    "husky": "^9.1.7"
+  }
+}
