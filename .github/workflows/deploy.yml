@@ -78,9 +78,6 @@ jobs:
             app-api:
               - 'iac/app/src/stacks/api/**'
               - 'services/api/**'
-            app-api-r:
-              - 'iac/app/src/stacks/api-r/**'
-              - 'services/api-r/**'
             ingress:
               - 'iac/ingress/**'
               - 'api-gateway-config/**'
@@ -104,15 +101,8 @@ jobs:
           working-directory: ./iac/app
           stack-name: api
 
-      - name: Synth and Deploy Api-R Stack
-        if: steps.filter.outputs.app-api-r == 'true'
-        uses: ./.github/actions/synth-and-deploy
-        with:
-          working-directory: ./iac/app
-          stack-name: api-r
-
       - name: Synth and Deploy Ingress Stack
-        # if: steps.filter.outputs.app-api == 'true'
+        if: steps.filter.outputs.app-api == 'true'
         uses: ./.github/actions/synth-and-deploy
         with:
           working-directory: ./iac/ingress
