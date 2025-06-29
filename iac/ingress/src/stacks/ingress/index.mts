@@ -32,6 +32,8 @@ export class IngressStack extends BaseIngressStack {
       displayName: 'liplan-api-gateway',
       openApiTemplatePath: join(
         process.cwd(),
+        '..',
+        '..',
         'api-gateway-config/openapi.yaml.tpl',
       ),
       cloudRunServices: [
