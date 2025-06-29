@@ -1,7 +1,7 @@
 {
-  "name": "@liplan/services-api",
-  "author": "developers@liplan.com",
-  "description": "liplan | services | api",
+  "name": "@gcp-tools/example-app-services-api",
+  "author": "dev@gcp-tools.com",
+  "description": "gcp-tools | example-app | services | api",
   "license": "Apache-2.0",
   "type": "module",
   "version": "0.0.0",
@@ -26,13 +26,5 @@
     "@types/node": "^22.14.0",
     "typescript": "^5.8.2",
     "vitest": "^3.2.4"
-  },
-  "engines": {
-    "node": ">=22",
-    "npm": ">=10.5.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://tbc"
   }
 }
