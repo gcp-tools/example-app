@@ -123,7 +123,7 @@ type IoError = NotFoundError |...
 #### 4. Deployment Execution
 - Create a commit for the feature with descriptive message
 - Push to the repository
-- Monitor GitHub Actions output to test deployment status
+- Monitor GitHub Actions output to test deployment status - use gcp-tools-mcp for this.
 - If deployment fails:
   - Analyze the error logs
   - Attempt to fix the deployment issues
