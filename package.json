@@ -49,12 +49,7 @@
     "@biomejs/cli-linux-x64": "1.9.4",
     "@biomejs/cli-win32-arm64": "1.9.4",
     "@biomejs/cli-win32-ia32": "1.9.4",
-    "@biomejs/cli-win32-x64": "1.9.4",
-    "@rollup/rollup-linux-x64-gnu": "^4.44.1",
-    "@rollup/rollup-linux-x64-musl": "^4.44.1",
-    "@rollup/rollup-macos-arm64": "^4.44.1",
-    "@rollup/rollup-macos-x64": "^4.44.1",
-    "@rollup/rollup-win32-x64-msvc": "^4.44.1"
+    "@biomejs/cli-win32-x64": "1.9.4"
   },
   "repository": {
     "type": "git",
