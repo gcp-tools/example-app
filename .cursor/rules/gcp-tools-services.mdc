@@ -10,17 +10,20 @@ alwaysApply: true
 ### Phase 1: Code Development
 
 #### 1. Specification Review
-- **ALWAYS** read the complete specification before starting any development work
+- **ALWAYS** read the complete brief before starting any development work
 - Understand the requirements, endpoints, data models, and business logic
 - Identify all external dependencies (databases, APIs, services)
 
 #### 2. Planning and Approval
+- Save the initial brief in docs/brief.md
 - Report back with a detailed plan of action including:
   - Service architecture and structure
   - API endpoints and their functionality
   - Data models and validation rules
   - External integrations required
-  - Testing strategy
+  - Save the plan in docs/plan.md
+- Define a testing specs & strategy
+  - Save test specs in docs/test.md
 - **WAIT for acceptance** before proceeding with any development work
 
 #### 3. Code Generation Principles

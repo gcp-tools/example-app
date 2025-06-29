@@ -61,10 +61,13 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Cache and Install all dependencies
-        run: npm ci --workspaces
+        run: make install
 
-      - name: Lint all workspaces
-        run: npm run lint --workspaces
+      - name: Lint all workspaces and service
+        run: make lint
+
+      - name: Test all workspaces and services
+        run: make test
 
       - name: Check for changed paths
         id: filter
@@ -75,12 +78,12 @@ jobs:
               - 'iac/projects/**'
             infra:
               - 'iac/infra/**'
+            ingress:
+              - 'iac/ingress/**'
             app-api:
               - 'iac/app/src/stacks/api/**'
               - 'services/api/**'
-            ingress:
-              - 'iac/ingress/**'
-              - 'api-gateway-config/**'
+
 
       - name: Synth and Deploy Projects
         if: steps.filter.outputs.projects == 'true'
