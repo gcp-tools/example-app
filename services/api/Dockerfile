@@ -8,11 +8,11 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install all dependencies, including devDependencies for building
-RUN npm ci
-
 # Copy the rest of the application source code
 COPY . .
+
+# Install all dependencies, including devDependencies for building
+RUN npm ci
 
 # Build the TypeScript code
 RUN npm run build
