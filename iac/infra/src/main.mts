@@ -3,7 +3,7 @@ import { App } from 'cdktf'
 
 const app = new App()
 
-new infra.NetworkInfraStack(app, {
+const networkStack = new infra.NetworkInfraStack(app, {
   subnetworkCidr: '10.1.0.0/20',
   connectorCidr: '10.8.0.0/28',
   scaling: {
@@ -16,7 +16,11 @@ new infra.NetworkInfraStack(app, {
 })
 
 // new infra.SqlStack(app, {})
-new infra.IamInfraStack(app, {})
-new infra.FirestoreInfraStack(app, {})
+const iamStack = new infra.IamInfraStack(app, {})
+iamStack.addDependency(networkStack)
+
+const firestoreStack = new infra.FirestoreInfraStack(app, {})
+firestoreStack.addDependency(networkStack)
+firestoreStack.addDependency(iamStack)
 
 app.synth()
