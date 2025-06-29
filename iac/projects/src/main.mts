@@ -5,7 +5,7 @@ const app = new App()
 
 new projects.HostProjectStack(app)
 new projects.DataProjectStack(app, {
-  apis: ['firestore'],
+  apis: ['compute', 'firestore'],
 })
 new projects.AppProjectStack(app)
 
