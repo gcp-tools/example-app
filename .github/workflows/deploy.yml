@@ -1,4 +1,4 @@
-name: Deploy liplan
+name: Deploy gcp-tools-example-app
 
 on:
   push:
@@ -25,8 +25,6 @@ env:
   GCP_TOOLS_PROJECT_NAME: ${{ vars.GCP_TOOLS_PROJECT_NAME }}
   GCP_TOOLS_OWNER_EMAILS: ${{ vars.GCP_TOOLS_OWNER_EMAILS }}
   GCP_TOOLS_REGIONS: ${{ vars.GCP_TOOLS_REGIONS }}
-
-  GCP_APP_PROJECT_ID: liplan-dev-app-op0atr
 
   GCP_TOOLS_USER: ci
   GCP_TOOLS_CI_ENVIRONMENTS: dev,test,sbx,prod
