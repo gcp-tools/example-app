@@ -80,9 +80,9 @@ jobs:
               - 'iac/infra/**'
             ingress:
               - 'iac/ingress/**'
-            app-api:
-              - 'iac/app/src/stacks/api/**'
-              - 'services/api/**'
+            app-jobs:
+              - 'iac/app/src/stacks/jobs/**'
+              - 'services/jobs/**'
 
 
       - name: Synth and Deploy Projects
@@ -97,12 +97,12 @@ jobs:
         with:
           working-directory: ./iac/infra
 
-      - name: Synth and Deploy Api Stack
-        if: steps.filter.outputs.app-api == 'true'
+      - name: Synth and Deploy Jobs Stack
+        if: steps.filter.outputs.app-jobs == 'true'
         uses: ./.github/actions/synth-and-deploy
         with:
           working-directory: ./iac/app
-          stack-name: api
+          stack-name: jobs
 
       - name: Synth and Deploy Ingress Stack
         if: steps.filter.outputs.app-api == 'true'
