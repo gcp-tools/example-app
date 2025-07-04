@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@cdktf/provider-google": "^16.2.0",
-    "@gcp-tools/cdktf": "^1.12.30",
+    "@gcp-tools/cdktf": "^1.14.0",
     "cdktf": "^0.21.0"
   },
   "optionalDependencies": {

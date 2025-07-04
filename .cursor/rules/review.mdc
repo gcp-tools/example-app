@@ -16,4 +16,6 @@ When designing architecture and writing code please follow the principles outlin
  - **Predictability (POLA)**: An abstraction's behavior should be consistent and not surprise its user. Its contract (inputs, outputs, and potential failures) must be clear and reliable.
  - **Least Context (Decoupling)**: A component should require the absolute minimum amount of external context to do its job and should not make assumptions about its environment.
  - **Jeffords rule**: The effort to understand existing code is different and often greater than the effort to create it, because the context of the original design is lost.
-.
+
+ - **Measure twice, cut once** Always double check you have covered everything asked of you by reading the instructions a second time, after completing your implentation, and updating it
+ if you have missed something.

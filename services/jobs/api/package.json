@@ -1,7 +1,7 @@
 {
-  "name": "@gcp-tools/example-app-services-api",
+  "name": "@gcp-tools/example-app-services-jobs-api",
   "author": "dev@gcp-tools.com",
-  "description": "gcp-tools | example-app | services | api",
+  "description": "gcp-tools | example-app | services | jobs | api",
   "license": "Apache-2.0",
   "type": "module",
   "version": "0.0.0",

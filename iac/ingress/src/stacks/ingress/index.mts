@@ -6,26 +6,26 @@ import { envConfig } from '@gcp-tools/cdktf/utils'
 import { type App, DataTerraformRemoteStateGcs } from 'cdktf'
 
 export class IngressStack extends BaseIngressStack {
-  public readonly apiAppRemoteState: DataTerraformRemoteStateGcs
+  public readonly jobsAppRemoteState: DataTerraformRemoteStateGcs
 
   constructor(scope: App) {
     super(scope, 'ingress', { user: envConfig.user })
 
-    this.apiAppRemoteState = new DataTerraformRemoteStateGcs(
+    this.jobsAppRemoteState = new DataTerraformRemoteStateGcs(
       this,
-      this.id('remote', 'state', 'api'),
+      this.id('remote', 'state', 'jobs'),
       {
         bucket: envConfig.bucket,
-        prefix: this.remotePrefix('app', 'api'),
+        prefix: this.remotePrefix('app', 'jobs'),
       },
     )
 
-    const apiUri = this.apiAppRemoteState.getString('service-uri')
-    const apiServiceName = this.apiAppRemoteState.getString('service-name')
+    const apiUri = this.jobsAppRemoteState.getString('api-service-uri')
+    const apiServiceName = this.jobsAppRemoteState.getString('api-service-name')
     const apiServiceLocation =
-      this.apiAppRemoteState.getString('service-location')
+      this.jobsAppRemoteState.getString('api-service-location')
     const apiServiceProject =
-      this.apiAppRemoteState.getString('service-project')
+      this.jobsAppRemoteState.getString('api-service-project')
 
     new ApiGatewayConstruct(this, 'core-api', {
       region: envConfig.regions[0],

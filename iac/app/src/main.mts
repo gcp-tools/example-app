@@ -1,8 +1,8 @@
 import { App } from 'cdktf'
-import { ApiStack } from './stacks/api/index.mjs'
+import { JobsStack } from './stacks/jobs/index.mjs'
 
 const app = new App()
 
-new ApiStack(app)
+new JobsStack(app)
 
 app.synth()

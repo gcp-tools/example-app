@@ -1,36 +1,21 @@
 .PHONY: install install-service
 
-## install~~ Install dependencies for all services, or a single service if service is set (polyglot, recursive)
+## install~~ Install dependencies for all services and their components, or specific service/component if parameters are set
 install:
-	@echo "[install.mk] Installing dependencies..."
-	@if [ -n "$(service)" ]; then \
-	  svc=./services/$(service); \
-	  if [ -d "$$svc" ]; then \
-	    echo "[install.mk] Installing only for service: $(service) ($$svc)"; \
-	    $(MAKE) install-service SERVICE_DIR="$$svc" || exit 1; \
-	  else \
-	    echo "[install.mk] ERROR: Service directory '$$svc' does not exist."; \
-	    exit 1; \
-	  fi; \
-	else \
-		npm install --workspaces; \
-    set -e; \
-	  services=$$(find ./services -mindepth 1 -maxdepth 1 -type d); \
-	  echo "[install.mk] Found services:"; \
-	  echo "$$services" | sed 's/^/  - /'; \
-	  for svc in $$services; do \
-	    $(MAKE) install-service SERVICE_DIR="$$svc" || exit 1; \
-	  done; \
+	@# Special case: run npm install --workspaces first for root dependencies
+	@if [ -z "$(service)" ] && [ -z "$(component)" ]; then \
+	  echo "[install.mk] Installing root workspace dependencies..."; \
+	  npm install --workspaces --if-present || echo "[install.mk] Warning: No workspaces found or workspace install failed, continuing..."; \
 	fi
-	@echo "[install.mk] All dependencies installed successfully."
+	bash scripts/make/traverse.sh install $(service) $(component)
 
-## install-service~~ Install dependencies for a single service (auto-detects language)
+## install-service~~ Install dependencies for a single service component (auto-detects language)
 install-service:
 	@svc="$(SERVICE_DIR)"; \
 	echo "[install.mk] Installing dependencies in $$svc..."; \
 	if [ -f "$$svc/package.json" ]; then \
 	  echo "[install.mk] Running npm install in $$svc"; \
-	  (cd "$$svc" && npm install) || (echo "[install.mk] npm install failed in $$svc" && exit 1); \
+	  (cd "$$svc" && npm install --if-present) || (echo "[install.mk] npm install failed in $$svc" && exit 1); \
 	elif [ -f "$$svc/requirements.txt" ]; then \
 	  echo "[install.mk] Running pip install in $$svc"; \
 	  (cd "$$svc" && pip install -r requirements.txt) || (echo "[install.mk] pip install failed in $$svc" && exit 1); \

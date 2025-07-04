@@ -1,29 +1,10 @@
 .PHONY: build build-service
 
-## build~~ Build all services, or a single service if service is set (polyglot, recursive)
+## build~~ Build all services and their components, or specific service/component if parameters are set
 build:
-	@echo "[build.mk] Building services..."
-	@if [ -n "$(service)" ]; then \
-	  svc=./services/$(service); \
-	  if [ -d "$$svc" ]; then \
-	    echo "[build.mk] Building only for service: $(service) ($$svc)"; \
-	    $(MAKE) build-service SERVICE_DIR="$$svc" || exit 1; \
-	  else \
-	    echo "[build.mk] ERROR: Service directory '$$svc' does not exist."; \
-	    exit 1; \
-	  fi; \
-	else \
-	  set -e; \
-	  services=$$(find ./services -mindepth 1 -maxdepth 1 -type d); \
-	  echo "[build.mk] Found services:"; \
-	  echo "$$services" | sed 's/^/  - /'; \
-	  for svc in $$services; do \
-	    $(MAKE) build-service SERVICE_DIR="$$svc" || exit 1; \
-	  done; \
-	fi
-	@echo "[build.mk] All services built successfully."
+	bash scripts/make/traverse.sh build $(service) $(component)
 
-## build-service~~ Build a single service (auto-detects language)
+## build-service~~ Build a single service component (auto-detects language)
 build-service:
 	@svc="$(SERVICE_DIR)"; \
 	echo "[build.mk] Building in $$svc..."; \
