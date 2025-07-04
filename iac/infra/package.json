@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.1",
-    "@gcp-tools/cdktf": "^1.14.0",
+    "@gcp-tools/cdktf": "^1.14.1",
     "cdktf": "^0.21.0",
     "cdktf-cli": "^0.21.0"
   }
