@@ -103,7 +103,7 @@ jobs:
           stack-name: jobs
 
       - name: Synth and Deploy Ingress Stack
-        if: steps.filter.outputs.app-api == 'true'
+        if: steps.filter.outputs.ingress == 'true'
         uses: ./.github/actions/synth-and-deploy
         with:
           working-directory: ./iac/ingress
