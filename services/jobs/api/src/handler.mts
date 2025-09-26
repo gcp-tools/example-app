@@ -7,7 +7,7 @@ import {
   type JobStatusResponse,
   JobSubmissionRequestSchema,
   envVarsSchema,
-} from './schemas.mjs'
+} from './types.mjs'
 
 const envVars = envVarsSchema.parse(process.env)
 

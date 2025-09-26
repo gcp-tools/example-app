@@ -63,23 +63,23 @@ export const envVarsSchema = z.object({
 })
 export type EnvVars = z.infer<typeof envVarsSchema>
 
-export const buildConfigSchema = z.object({
-  buildArgs: z
-    .record(z.string(), z.string())
-    .optional()
-    .describe('Build arguments.'),
-  timeout: z.string().optional().describe('Build timeout.'),
-  machineType: z.string().optional().describe('Machine type.'),
-  buildTrigger: z.string().optional().describe('Build trigger.'),
-})
-export type BuildConfig = z.infer<typeof buildConfigSchema>
+// export const buildConfigSchema = z.object({
+//   buildArgs: z
+//     .record(z.string(), z.string())
+//     .optional()
+//     .describe('Build arguments.'),
+//   timeout: z.string().optional().describe('Build timeout.'),
+//   machineType: z.string().optional().describe('Machine type.'),
+//   buildTrigger: z.string().optional().describe('Build trigger.'),
+// })
+// export type BuildConfig = z.infer<typeof buildConfigSchema>
 
-export const testConfigSchema = z.object({
-  testTrigger: z.string().optional().describe('Test trigger.'),
-})
-export type TestConfig = z.infer<typeof testConfigSchema>
+// export const testConfigSchema = z.object({
+//   testTrigger: z.string().optional().describe('Test trigger.'),
+// })
+// export type TestConfig = z.infer<typeof testConfigSchema>
 
-export const helpSchema = z.object({
-  help: z.string().describe('Help message.'),
-})
-export type Help = z.infer<typeof helpSchema>
+// export const helpSchema = z.object({
+//   help: z.string().describe('Help message.'),
+// })
+// export type Help = z.infer<typeof helpSchema>

@@ -22,6 +22,7 @@ export class JobsStack extends AppStack {
             FIRESTORE_PROJECT_ID: this.firestoreDatabaseProjectId,
             NODE_ENV: 'production',
           },
+          egress: 'PRIVATE_RANGES_ONLY',
         },
       },
     )
