@@ -1,24 +1,23 @@
 import * as infra from '@gcp-tools/cdktf/stacks/infrastructure'
-import { envConfig } from '@gcp-tools/cdktf/utils'
+// import { envConfig } from '@gcp-tools/cdktf/utils'
 import { App } from 'cdktf'
 
 const app = new App()
 
-const isProd = envConfig.environment === 'prod'
-
-const minThroughput = isProd ? 600 : 200
-const maxThroughput = isProd ? 1200 : 300
+// const isProd = envConfig.environment === 'prod'
+// const minThroughput = isProd ? 600 : 200
+// const maxThroughput = isProd ? 1200 : 300
 
 const networkStack = new infra.NetworkInfraStack(app, {
   subnetworkCidr: '10.1.0.0/20',
   connectorCidr: '10.8.0.0/28',
-  scaling: {
-    type: 'THROUGHPUT',
-    data: {
-      minThroughput,
-      maxThroughput,
-    },
-  },
+  // scaling: {
+  //   type: 'THROUGHPUT',
+  //   data: {
+  //     minThroughput,
+  //     maxThroughput,
+  //   },
+  // },
 })
 
 // new infra.SqlStack(app, {})
